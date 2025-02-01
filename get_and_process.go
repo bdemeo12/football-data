@@ -5,22 +5,31 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
-const endpoint = "https://api.football-data.org/v4/matches"
+const endpoint = "https://api.football-data.org/v4/competitions?area=2077"
 
 type footballData struct {
-	dateStatus string
-	opponenets string
-	score      string
+	Area areaData
 }
 
-func getFootballData(endpoint string) (*footballData, error) {
+type areaData struct {
+	Id   string
+	Name string
+}
+
+func get2024Matches(endpoint string) (*footballData, error) {
 
 	req, err := http.NewRequest(http.MethodGet, endpoint, nil)
 	if err != nil {
 		return nil, err
 	}
+
+	godotenv.Load(".env")
+	req.Header.Set("X-Auth-Token", os.Getenv("AUTH_TOKEN"))
 	req.Header.Set("Content-Type", "application.json")
 
 	resp, err := http.DefaultClient.Do(req)
@@ -30,13 +39,15 @@ func getFootballData(endpoint string) (*footballData, error) {
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
 
 	if err != nil {
 		return nil, err
 	}
 
 	data := footballData{}
-	if err := json.Unmarshal(body, &data); err != nil {
+	err = json.Unmarshal(body, &data)
+	if err != nil {
 		return nil, err
 	}
 
@@ -44,7 +55,7 @@ func getFootballData(endpoint string) (*footballData, error) {
 }
 
 func main() {
-	data, err := getFootballData(endpoint)
+	data, err := get2024Matches(endpoint)
 	if err != nil {
 		fmt.Println(err)
 	} else {
