@@ -22,4 +22,6 @@ func main() {
 	}
 
 	getandprocess.FinalScore(data)
+	fmt.Println()
+	getandprocess.TopThreeTeams(data)
 }
