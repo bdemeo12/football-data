@@ -6,11 +6,11 @@ import (
 	"net/http"
 )
 
-func Get2024Matches(endpoint string, authToken string) (*footballData, error) {
+func Get2024Matches(endpoint string, authToken string) (footballData, error) {
 
 	req, err := http.NewRequest(http.MethodGet, endpoint, nil)
 	if err != nil {
-		return nil, err
+		return footballData{}, err
 	}
 
 	req.Header.Set("X-Auth-Token", authToken)
@@ -18,21 +18,21 @@ func Get2024Matches(endpoint string, authToken string) (*footballData, error) {
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, err
+		return footballData{}, err
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 
 	if err != nil {
-		return nil, err
+		return footballData{}, err
 	}
 
 	data := footballData{}
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		return nil, err
+		return footballData{}, err
 	}
 
-	return &data, nil
+	return data, nil
 }

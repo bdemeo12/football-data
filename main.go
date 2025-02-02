@@ -21,5 +21,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(data.Matches[0])
+	getandprocess.FinalScore(data)
 }

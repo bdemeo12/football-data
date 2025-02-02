@@ -8,6 +8,7 @@ type matchData struct {
 	HomeTeam homeTeam
 	AwayTeam awayTeam
 	Score    score
+	Stage    string
 }
 
 type homeTeam struct {
